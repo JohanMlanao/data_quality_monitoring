@@ -111,24 +111,28 @@ class TestVisitSensor(unittest.TestCase):
 
     def test_with_break(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300, perc_break=10)
-        visit_count = visit_sensor.get_visit_count(date(year=2025, month=4, day=12), business_hour=12)
+        visit_count = visit_sensor.get_visit_count(
+            date(year=2025, month=4, day=12), business_hour=12
+        )
 
-        self.assertEqual(visit_count,0)
+        self.assertEqual(visit_count, 0)
 
     def test_with_malfunction(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300, perc_malfunction=123)
-        visit_count = visit_sensor.get_visit_count(date(year=2025, month=4, day=12), business_hour=12)
+        visit_count = visit_sensor.get_visit_count(
+            date(year=2025, month=4, day=12), business_hour=12
+        )
 
         self.assertEqual(visit_count, 19.0)
 
     def test_without_malfunction(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300, perc_malfunction=0)
-        visit_count = visit_sensor.get_visit_count(date(year=2025, month=4, day=12), business_hour=12)
+        visit_count = visit_sensor.get_visit_count(
+            date(year=2025, month=4, day=12), business_hour=12
+        )
 
         self.assertEqual(visit_count, 96)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
-
-
-

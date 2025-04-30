@@ -19,10 +19,9 @@ class VisitSensor:
         self.perc_break = perc_break
         self.perc_malfunction = perc_malfunction
 
-
     def simulate_visit_count(self, business_date: date, business_hour: int) -> int:
 
-        # Ensure reproducibilty of measurements
+        # Ensure reproducibility of measurements
         np.random.seed(seed=business_date.toordinal())
 
         # Find out which day the business_date corresponds to: Monday = 0, Sunday = 6
@@ -68,7 +67,6 @@ class VisitSensor:
         return visit
 
 
-
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         year, month, day, hour = [int(v) for v in sys.argv[1].split("-")]
@@ -76,7 +74,7 @@ if __name__ == "__main__":
         year, month, day, hour = [2025, 5, 24, 10]
     queried_date = date(year, month, day)
 
-    capteur = VisitSensor(1500, 150)
+    sensor = VisitSensor(1500, 150)
     init_date = date(year=2022, month=1, day=1)
     init_hour = 1
     while init_date < date(year=2024, month=1, day=1):
@@ -84,6 +82,5 @@ if __name__ == "__main__":
         if init_hour == 24:
             init_date += timedelta(days=1)
             init_hour = 0
-        visit_count = capteur.get_visit_count(init_date, init_hour)
+        visit_count = sensor.get_visit_count(init_date, init_hour)
         print(init_date, init_hour, visit_count)
-
