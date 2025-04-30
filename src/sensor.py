@@ -1,16 +1,26 @@
-import numpy as np
 import random
-from datetime import date
+import sys
+from datetime import date, timedelta
 
-class Sensor:
+import numpy as np
 
-    def __init__(self, avg_visit: int, std_visit: int) -> None:
+
+class VisitSensor:
+
+    def __init__(
+        self,
+        avg_visit: int,
+        std_visit: int,
+        perc_break: float = 0.015,
+        perc_malfunction: float = 0.035,
+    ) -> None:
         self.avg_visit = avg_visit
         self.std_visit = std_visit
+        self.perc_break = perc_break
+        self.perc_malfunction = perc_malfunction
 
-    def simulate_visit(self, business_date: date, hour: int) -> int:
-        """Simulate the number of person detected by the sensor
-        during the day"""
+
+    def simulate_visit_count(self, business_date: date, business_hour: int) -> int:
 
         # Ensure reproducibilty of measurements
         np.random.seed(seed=business_date.toordinal())
@@ -32,14 +42,48 @@ class Sensor:
             visit = -1
 
         # Same traffic between 8am and 7pm and no traffic between 8pm and 7am
-        if hour < 8 or hour > 19:
+        if business_hour < 8 or business_hour > 19:
             visit = -1
         else:
             visit /= 11
 
+        # Return an integer
         return np.floor(visit)
+
+    def get_visit_count(self, business_date: date, business_hour: int) -> int:
+        np.random.seed(seed=business_date.toordinal())
+        proba_malfunction = np.random.random()
+
+        # The sensor can break sometimes
+        if proba_malfunction < self.perc_break:
+            print("break")
+            return 0
+
+        visit = self.simulate_visit_count(business_date, business_hour)
+
+        # The sensor can also malfunction
+        if proba_malfunction < self.perc_malfunction:
+            print("malfunction")
+            visit = np.floor(visit * 0.2)
+        return visit
+
 
 
 if __name__ == "__main__":
-    capteur = Sensor(1500, 150)
-    print(capteur.simulate_visit(date(year=2023, month=10, day=25), hour=8))
+    if len(sys.argv) > 1:
+        year, month, day, hour = [int(v) for v in sys.argv[1].split("-")]
+    else:
+        year, month, day, hour = [2025, 5, 24, 10]
+    queried_date = date(year, month, day)
+
+    capteur = VisitSensor(1500, 150)
+    init_date = date(year=2022, month=1, day=1)
+    init_hour = 1
+    while init_date < date(year=2024, month=1, day=1):
+        init_hour += 1
+        if init_hour == 24:
+            init_date += timedelta(days=1)
+            init_hour = 0
+        visit_count = capteur.get_visit_count(init_date, init_hour)
+        print(init_date, init_hour, visit_count)
+
