@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from sensor import VisitSensor
+from src.sensor import VisitSensor
 
 
 class TestVisitSensor(unittest.TestCase):
