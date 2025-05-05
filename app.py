@@ -35,7 +35,9 @@ def visit(store_name: str, year: int, month: int, day: int, hour: int) -> JSONRe
         return JSONResponse(status_code=404, content="Enter a valid hour")
 
     if hour < 8 or hour > 19:
-        return JSONResponse(status_code=404, content="The store is open between 8am and 7pm")
+        return JSONResponse(
+            status_code=404, content="The store is open between 8am and 7pm"
+        )
 
     return JSONResponse(
         status_code=200,
