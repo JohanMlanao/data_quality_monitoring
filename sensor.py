@@ -67,22 +67,3 @@ class VisitSensor:
             print("malfunction")
             visit = np.floor(visit * 0.2)
         return visit
-
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        year, month, day, hour = [int(v) for v in sys.argv[1].split("-")]
-    else:
-        year, month, day, hour = [2025, 5, 24, 10]
-    queried_date = date(year, month, day)
-
-    sensor = VisitSensor(1500, 150)
-    init_date = date(year=2022, month=1, day=1)
-    init_hour = 1
-    while init_date < date(year=2024, month=1, day=1):
-        init_hour += 1
-        if init_hour == 24:
-            init_date += timedelta(days=1)
-            init_hour = 0
-        visit_count = sensor.get_visit_count(init_date, init_hour)
-        print(init_date, init_hour, visit_count)
