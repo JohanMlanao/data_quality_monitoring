@@ -1,4 +1,4 @@
-from src.sensor import VisitSensor
+from src.store import StoreSensor
 
 
 def create_app() -> dict:
@@ -12,7 +12,7 @@ def create_app() -> dict:
     store_dict = dict()
 
     for i in range(len(store_name)):
-        store_dict[store_name[i]] = VisitSensor(
+        store_dict[store_name[i]] = StoreSensor(
             store_name[i],
             store_avg_visit[i],
             store_std_visit[i],
