@@ -48,9 +48,5 @@ def visit(
         visit_count = store_dict[store_name].get_sensor_traffic(
             sensor_id, date(year=year, month=month, day=day)
         )
-    if visit_count < 0:
-        return JSONResponse(
-            status_code=404, content="The store was closed try another date"
-        )
 
     return JSONResponse(status_code=200, content=visit_count)
