@@ -52,7 +52,6 @@ if __name__ == "__main__":
     df = pd.DataFrame(data)
     grouped = dict(tuple(df.groupby(["year", "month"])))
 
-    # Example: print first 2 rows of each group
     for (year, month), group_df in grouped.items():
         # filename = f"data/raw/data_{store_name}_{year}_{month:02}.csv"
         if sensor_id and (sensor_id < 8 and sensor_id > 0):

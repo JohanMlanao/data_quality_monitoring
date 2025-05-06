@@ -1,6 +1,8 @@
-from src.sensor import VisitSensor
-import numpy as np
 from datetime import date
+
+import numpy as np
+
+from src.sensor import VisitSensor
 
 
 class StoreSensor:
