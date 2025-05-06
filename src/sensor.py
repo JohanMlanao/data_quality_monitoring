@@ -42,7 +42,7 @@ class VisitSensor:
             visit = -1
 
         # Return an integer
-        return math.floor(visit/11)
+        return math.floor(visit / 11)
 
     def get_visit_count(self, business_date: date) -> int:
         np.random.seed(seed=business_date.toordinal())
