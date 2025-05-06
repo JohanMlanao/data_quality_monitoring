@@ -1,7 +1,7 @@
+import math
 from datetime import date, timedelta
 
 import numpy as np
-import math
 
 
 class VisitSensor:
