@@ -1,5 +1,3 @@
-import random
-import sys
 from datetime import date, timedelta
 
 import numpy as np

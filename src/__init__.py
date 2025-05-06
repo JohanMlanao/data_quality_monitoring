@@ -1,4 +1,4 @@
-from sensor import VisitSensor
+from src.sensor import VisitSensor
 
 
 def create_app() -> dict:

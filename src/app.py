@@ -4,7 +4,7 @@ from datetime import date
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from __init__ import create_app
+from src.__init__ import create_app
 
 store_dict = create_app()
 app = FastAPI()
