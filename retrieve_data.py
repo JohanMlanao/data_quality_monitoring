@@ -1,6 +1,7 @@
 import sys
 from datetime import date, timedelta
 
+import pandas as pd
 import requests
 
 
@@ -26,6 +27,7 @@ if __name__ == "__main__":
 
     init_date = date(year=int(year), month=int(month), day=int(day))
     init_hour = int(hour)
+    data = []
     while init_date < date.today():
         init_hour += 1
         if init_hour == 24:
@@ -38,4 +40,14 @@ if __name__ == "__main__":
             business_day=init_date.day,
             business_hour=int(init_hour),
         )
-        print(visit_count)
+        row = {
+            "store_name": store_name,
+            "visit_count": visit_count,
+            "hour": init_hour,
+            "day": init_date.day,
+            "month": init_date.month,
+            "year": init_date.year,
+        }
+        data.append(row)
+    df = pd.DataFrame(data)
+    print(df.head())
