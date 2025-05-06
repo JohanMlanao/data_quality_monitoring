@@ -50,4 +50,4 @@ if __name__ == "__main__":
         }
         data.append(row)
     df = pd.DataFrame(data)
-    df.to_csv(path_or_buf="data/raw/first.csv", index=True)
+    df.to_csv(path_or_buf="data/raw/first.csv", index=False)
