@@ -8,13 +8,11 @@ class VisitSensor:
 
     def __init__(
         self,
-        store_name: str,
         avg_visit: int,
         std_visit: int,
         perc_break: float = 0.015,
         perc_malfunction: float = 0.035,
     ) -> None:
-        self.store_name = store_name
         self.avg_visit = avg_visit
         self.std_visit = std_visit
         self.perc_break = perc_break
