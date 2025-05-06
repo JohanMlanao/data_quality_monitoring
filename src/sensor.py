@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 import numpy as np
+import math
 
 
 class VisitSensor:
@@ -47,7 +48,7 @@ class VisitSensor:
             visit /= 11
 
         # Return an integer
-        return np.floor(visit)
+        return math.floor(visit)
 
     def get_visit_count(self, business_date: date, business_hour: int) -> int:
         np.random.seed(seed=business_date.toordinal())
