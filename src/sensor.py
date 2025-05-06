@@ -20,7 +20,7 @@ class VisitSensor:
         self.perc_break = perc_break
         self.perc_malfunction = perc_malfunction
 
-    def simulate_visit_count(self, business_date: date, business_hour: int) -> int:
+    def simulate_visit_count(self, business_date: date) -> int:
 
         # Ensure reproducibility of measurements
         np.random.seed(seed=business_date.toordinal())
@@ -41,16 +41,10 @@ class VisitSensor:
         if week_day == 6:
             visit = -1
 
-        # Same traffic between 8am and 7pm and no traffic between 8pm and 7am
-        if business_hour < 8 or business_hour > 19:
-            visit = -1
-        else:
-            visit /= 11
-
         # Return an integer
-        return math.floor(visit)
+        return math.floor(visit/11)
 
-    def get_visit_count(self, business_date: date, business_hour: int) -> int:
+    def get_visit_count(self, business_date: date) -> int:
         np.random.seed(seed=business_date.toordinal())
         proba_malfunction = np.random.random()
 
@@ -59,7 +53,7 @@ class VisitSensor:
             print("break")
             return 0
 
-        visit = self.simulate_visit_count(business_date, business_hour)
+        visit = self.simulate_visit_count(business_date)
 
         # The sensor can also malfunction
         if proba_malfunction < self.perc_malfunction:

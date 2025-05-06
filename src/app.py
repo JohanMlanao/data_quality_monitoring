@@ -11,7 +11,7 @@ app = FastAPI()
 
 
 @app.get("/")
-def visit(store_name: str, year: int, month: int, day: int, hour: int) -> JSONResponse:
+def visit(store_name: str, year: int, month: int, day: int) -> JSONResponse:
     # If the store is not in the dictionary
     if not (store_name in store_dict.keys()):
         return JSONResponse(status_code=404, content="Store Not Found")
@@ -31,12 +31,9 @@ def visit(store_name: str, year: int, month: int, day: int, hour: int) -> JSONRe
     if date.today() < requested_date:
         return JSONResponse(status_code=404, content="Choose a date in the past")
 
-    if hour < 0 or hour > 23:
-        return JSONResponse(status_code=404, content="Enter a valid hour")
-
     return JSONResponse(
         status_code=200,
         content=store_dict[f"{store_name}"].get_visit_count(
-            date(year=year, month=month, day=day), business_hour=hour
+            date(year=year, month=month, day=day),
         ),
     )
