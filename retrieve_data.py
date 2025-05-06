@@ -21,9 +21,9 @@ def get_data(
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        store_name, year, month, day, hour = [v for v in sys.argv[1].split("-")]
+        store_name, hour, day, month, year = [v for v in sys.argv[1].split("-")]
     else:
-        store_name, year, month, day, hour = ["Bordeaux", 2025, 5, 1, 10]
+        store_name, hour, day, month, year = ["Bordeaux", 10, 1, 5, 2025]
 
     init_date = date(year=int(year), month=int(month), day=int(day))
     init_hour = int(hour)
@@ -50,4 +50,9 @@ if __name__ == "__main__":
         }
         data.append(row)
     df = pd.DataFrame(data)
-    df.to_csv(path_or_buf="data/raw/first.csv", index=False)
+    grouped = dict(tuple(df.groupby(["year", "month"])))
+
+    # Example: print first 2 rows of each group
+    for (year, month), group_df in grouped.items():
+        filename = f"data/raw/data_{year}_{month:02}.csv"
+        group_df.to_csv(filename, index=False)
