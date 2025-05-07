@@ -4,9 +4,11 @@ import pandas as pd
 import requests
 
 
-def get_data(
-    business_parameter: str,
-) -> (int, str):
+def get_data(business_parameter: str) -> tuple[str, int]:
+    """
+    Sends a GET request to the data quality monitoring API with the given business parameter.
+    Returns the response text and status code.
+    """
     r = requests.get(
         "https://data-quality-monitoring-j9nq.onrender.com",
         params=business_parameter,
@@ -14,50 +16,89 @@ def get_data(
     return r.text, r.status_code
 
 
-if __name__ == "__main__":
+def get_user_inputs() -> tuple[str, date, str]:
+    """Prompts the user for store location, date, and sensor ID input."""
     store_location = input("Please enter the store location: ")
     date_input = input("Please enter a date in the format DD-MM-YYYY: ")
-    date_format = "%d-%m-%Y"
-    business_date = datetime.strptime(date_input, date_format).date()
+    business_date = datetime.strptime(date_input, "%d-%m-%Y").date()
     sensor_id = input(
         "To view sensor traffic, enter a number from 1 to 8, or press Enter to view all traffic: "
     )
-    if sensor_id is None or (sensor_id and (int(sensor_id) > 7 or int(sensor_id) < 0)):
-        print("Sensor ID not selected or is invalid; returning all traffic by default.")
-    init_date = business_date
-    init_hour = 0
+    return store_location, business_date, sensor_id
+
+
+def is_valid_sensor(sensor_id: str) -> bool:
+    """Checks whether the sensor_id is a valid number from 1 to 7."""
+    return sensor_id.isdigit() and 0 < int(sensor_id) < 8
+
+
+def collect_traffic_data(store_location: str, start_date: date) -> list[dict]:
+    """
+    Iterates from start_date to today, hour by hour, collecting traffic data.
+    Returns a list of data rows.
+    """
     data = []
-    while init_date < date.today():
-        init_hour += 1
-        if init_hour == 24:
-            init_date += timedelta(days=1)
-            init_hour = 0
-        if init_hour < 8 or init_hour > 19:
+    current_date = start_date
+    current_hour = 0
+
+    while current_date < date.today():
+        current_hour += 1
+
+        if current_hour == 24:
+            current_date += timedelta(days=1)
+            current_hour = 0
+
+        if current_hour < 8 or current_hour > 19:
             visit_count = 0
         else:
-            parameter = f"store_location={store_location}&year={init_date.year}&month={init_date.month}&day={init_date.day}"
-            visit_count, status = get_data(business_parameter=parameter)
+            params = (
+                f"store_location={store_location}"
+                f"&year={current_date.year}&month={current_date.month}&day={current_date.day}"
+            )
+            visit_count, status = get_data(business_parameter=params)
+
             if status == 404:
-                break
+                print("\nThe specified store location could not be found.")
+                return []
+
         row = {
             "store_location": store_location,
             "visit_count": visit_count,
-            "hour": init_hour,
-            "day": init_date.day,
-            "month": init_date.month,
-            "year": init_date.year,
+            "hour": current_hour,
+            "day": current_date.day,
+            "month": current_date.month,
+            "year": current_date.year,
         }
         data.append(row)
-    if status != 404:
-        df = pd.DataFrame(data)
-        grouped = dict(tuple(df.groupby(["year", "month"])))
 
-        for (year, month), group_df in grouped.items():
-            # filename = f"data/raw/data_{store_name}_{year}_{month:02}.csv"
-            if sensor_id and (0 < int(sensor_id) < 8):
-                filename = f"data/raw/data_{store_location}_{year}_{month:02}_sensor{sensor_id}.csv"
-            else:
-                filename = f"data/raw/data_{store_location}_{year}_{month:02}.csv"
-            group_df.to_csv(filename, index=False)
-    else:
-        print("\nThe specified store location could not be found.")
+    return data
+
+
+def save_data_by_month(data: list[dict], store_location: str, sensor_id: str):
+    """Groups data by month and saves each group as a separate CSV file."""
+    df = pd.DataFrame(data)
+    grouped = dict(tuple(df.groupby(["year", "month"])))
+
+    for (year, month), group_df in grouped.items():
+        if is_valid_sensor(sensor_id):
+            filename = f"data/raw/data_{store_location}_{year}_{month:02}_sensor{sensor_id}.csv"
+        else:
+            filename = f"data/raw/data_{store_location}_{year}_{month:02}.csv"
+
+        group_df.to_csv(filename, index=False)
+
+
+def main():
+    store_location, business_date, sensor_id = get_user_inputs()
+
+    if sensor_id and not is_valid_sensor(sensor_id):
+        print("Sensor ID not selected or is invalid; returning all traffic by default.")
+
+    data = collect_traffic_data(store_location, business_date)
+
+    if data:
+        save_data_by_month(data, store_location, sensor_id)
+
+
+if __name__ == "__main__":
+    main()
