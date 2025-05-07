@@ -37,7 +37,7 @@ class VisitSensor:
 
         # No traffic on Sundays(6)
         if week_day == 6:
-            visit = -1
+            visit = 0
 
         # Return an integer
         return math.floor(visit / 11)
@@ -49,7 +49,7 @@ class VisitSensor:
         # The sensor can break sometimes
         if proba_malfunction < self.perc_break:
             print("break")
-            return 0
+            return -1
 
         visit = self.simulate_visit_count(business_date)
 

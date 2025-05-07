@@ -20,7 +20,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=7), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_tuesday_open(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300)
@@ -36,7 +36,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_wednesday_open(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300)
@@ -52,7 +52,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_thursday_open(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300)
@@ -68,7 +68,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_friday_open(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300)
@@ -84,7 +84,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_saturday_open(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300)
@@ -100,7 +100,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_sunday_closed(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300)
@@ -108,7 +108,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=22
         )
 
-        self.assertFalse(visit_count != -1)
+        self.assertFalse(visit_count != 0)
 
     def test_with_break(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300, perc_break=10)
@@ -116,7 +116,7 @@ class TestVisitSensor(unittest.TestCase):
             date(year=2025, month=4, day=12), business_hour=12
         )
 
-        self.assertEqual(visit_count, 0)
+        self.assertEqual(visit_count, -1)
 
     def test_with_malfunction(self):
         visit_sensor = VisitSensor(avg_visit=1200, std_visit=300, perc_malfunction=123)
