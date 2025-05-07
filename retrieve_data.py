@@ -22,13 +22,9 @@ if __name__ == "__main__":
     sensor_id = input(
         "To view sensor traffic, enter a number from 1 to 8, or press Enter to view all traffic: "
     )
-    init_date = business_date
-    if sensor_id and (0 < int(sensor_id) < 8):
-        sensor_id = int(sensor_id)
-        parameter = f"store_name={store_name}&year={init_date.year}&month={init_date.month}&day={init_date.day}&sensor_id={sensor_id}"
-    else:
+    if sensor_id is None or (sensor_id and (int(sensor_id) > 7 or int(sensor_id) < 0)):
         print("Sensor ID not selected or is invalid; returning all traffic by default.")
-        parameter = f"store_name={store_name}&year={init_date.year}&month={init_date.month}&day={init_date.day}"
+    init_date = business_date
     init_hour = 0
     data = []
     while init_date < date.today():
@@ -37,8 +33,9 @@ if __name__ == "__main__":
             init_date += timedelta(days=1)
             init_hour = 0
         if init_hour < 8 or init_hour > 19:
-            visit_count = -1
+            visit_count = 0
         else:
+            parameter = f"store_name={store_name}&year={init_date.year}&month={init_date.month}&day={init_date.day}"
             visit_count = get_data(business_parameter=parameter)
         row = {
             "store_name": store_name,
@@ -54,7 +51,7 @@ if __name__ == "__main__":
 
     for (year, month), group_df in grouped.items():
         # filename = f"data/raw/data_{store_name}_{year}_{month:02}.csv"
-        if sensor_id and (sensor_id < 8 and sensor_id > 0):
+        if sensor_id and (0 < int(sensor_id) < 8):
             filename = (
                 f"data/raw/data_{store_name}_{year}_{month:02}_sensor{sensor_id}.csv"
             )
