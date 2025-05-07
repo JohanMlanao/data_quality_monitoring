@@ -15,7 +15,7 @@ def get_data(
 
 
 if __name__ == "__main__":
-    store_name = input("Please enter the store location: ")
+    store_location = input("Please enter the store location: ")
     date_input = input("Please enter a date in the format DD-MM-YYYY: ")
     date_format = "%d-%m-%Y"
     business_date = datetime.strptime(date_input, date_format).date()
@@ -35,10 +35,10 @@ if __name__ == "__main__":
         if init_hour < 8 or init_hour > 19:
             visit_count = 0
         else:
-            parameter = f"store_name={store_name}&year={init_date.year}&month={init_date.month}&day={init_date.day}"
+            parameter = f"store_name={store_location}&year={init_date.year}&month={init_date.month}&day={init_date.day}"
             visit_count = get_data(business_parameter=parameter)
         row = {
-            "store_name": store_name,
+            "store_location": store_location,
             "visit_count": visit_count,
             "hour": init_hour,
             "day": init_date.day,
@@ -52,9 +52,7 @@ if __name__ == "__main__":
     for (year, month), group_df in grouped.items():
         # filename = f"data/raw/data_{store_name}_{year}_{month:02}.csv"
         if sensor_id and (0 < int(sensor_id) < 8):
-            filename = (
-                f"data/raw/data_{store_name}_{year}_{month:02}_sensor{sensor_id}.csv"
-            )
+            filename = f"data/raw/data_{store_location}_{year}_{month:02}_sensor{sensor_id}.csv"
         else:
-            filename = f"data/raw/data_{store_name}_{year}_{month:02}.csv"
+            filename = f"data/raw/data_{store_location}_{year}_{month:02}.csv"
         group_df.to_csv(filename, index=False)

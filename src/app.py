@@ -12,10 +12,10 @@ app = FastAPI()
 
 @app.get("/")
 def visit(
-    store_name: str, year: int, month: int, day: int, sensor_id: int | None = None
+    store_location: str, year: int, month: int, day: int, sensor_id: int | None = None
 ) -> JSONResponse:
     # If the store is not in the dictionary
-    if not (store_name in store_dict.keys()):
+    if not (store_location in store_dict.keys()):
         return JSONResponse(status_code=404, content="Store Not Found")
 
     # Check the value of sensor_id
@@ -41,11 +41,11 @@ def visit(
 
     # If no sensor choose return the visit for the whole store
     if sensor_id is None:
-        visit_count = store_dict[store_name].get_all_traffic(
+        visit_count = store_dict[store_location].get_all_traffic(
             date(year=year, month=month, day=day)
         )
     else:
-        visit_count = store_dict[store_name].get_sensor_traffic(
+        visit_count = store_dict[store_location].get_sensor_traffic(
             sensor_id, date(year=year, month=month, day=day)
         )
 

@@ -8,14 +8,14 @@ from src.sensor import VisitSensor
 class StoreSensor:
     def __init__(
         self,
-        name: str,
+        location: str,
         avg_visit: int,
         std_visit: int,
         perc_malfunction: float = 0,
         perc_break: float = 0,
     ) -> None:
         """Initialize a store"""
-        self.name = name
+        self.name = location
         self.sensors = list()
 
         # To always get the same result when asking for the same store
