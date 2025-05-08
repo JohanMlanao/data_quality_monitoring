@@ -15,7 +15,7 @@ df_day.dropna(inplace=True)
 df_day.query("visit_count > 0", inplace=True)
 df_day["day_of_week"] = df_day["date"].dt.dayofweek
 
-df_day["moving_avg_last_4_weekday"] = (
+df_day["moving_avg_4"] = (
     df_day.groupby(by=["day_of_week"])["visit_count"]
     .rolling(window=4, min_periods=1)
     .mean()
@@ -27,7 +27,7 @@ df_day = df_day[
         "date",
         "day_of_week",
         "visit_count",
-        "moving_avg_last_4_weekday",
+        "moving_avg_4",
     ]
 ]
 print(df_day.sort_values(by="date"))
