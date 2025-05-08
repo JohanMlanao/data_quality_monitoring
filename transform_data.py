@@ -30,4 +30,8 @@ df_day = df_day[
         "moving_avg_4",
     ]
 ]
+
+df_day["pct_change"] = df_day.apply(
+    lambda x: (abs(x["visit_count"] - x["moving_avg_4"])) / x["moving_avg_4"], axis=1
+)
 print(df_day.sort_values(by="date"))
