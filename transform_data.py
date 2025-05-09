@@ -36,4 +36,4 @@ df_day["pct_change"] = df_day.apply(
 )
 print(df_day.sort_values(by="date"))
 
-df_day.to_parquet(path="data/processed/data.parquet")
+df_day.to_parquet(path="data/processed/data.parquet", index=False)
