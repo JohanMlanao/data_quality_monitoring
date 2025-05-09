@@ -32,7 +32,9 @@ def is_valid_sensor(sensor_id: str) -> bool:
     return sensor_id.isdigit() and 0 < int(sensor_id) < 8
 
 
-def collect_traffic_data(store_location: str, start_date: date) -> list[dict]:
+def collect_traffic_data(
+    store_location: str, sensor_id: str, start_date: date
+) -> list[dict]:
     """
     Iterates from start_date to today, hour by hour, collecting traffic data.
     Returns a list of data rows.
@@ -50,6 +52,12 @@ def collect_traffic_data(store_location: str, start_date: date) -> list[dict]:
 
         if current_hour < 8 or current_hour > 19:
             visit_count = 0
+        elif is_valid_sensor(sensor_id):
+            params = (
+                f"store_location={store_location}"
+                f"&year={current_date.year}&month={current_date.month}&day={current_date.day}&sensor_id={sensor_id}"
+            )
+            visit_count, status = get_data(business_parameter=params)
         else:
             params = (
                 f"store_location={store_location}"
@@ -94,7 +102,7 @@ def main():
     if sensor_id and not is_valid_sensor(sensor_id):
         print("Sensor ID not selected or is invalid; returning all traffic by default.")
 
-    data = collect_traffic_data(store_location, business_date)
+    data = collect_traffic_data(store_location, sensor_id, business_date)
 
     if data:
         save_data_by_month(data, store_location, sensor_id)
