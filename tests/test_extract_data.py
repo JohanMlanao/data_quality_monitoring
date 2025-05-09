@@ -1,5 +1,5 @@
 import unittest
-from datetime import date
+from datetime import date, timedelta
 from unittest.mock import MagicMock, patch
 
 from extract_data import collect_traffic_data, get_data, is_valid_sensor
@@ -62,31 +62,25 @@ class TestExtractData(unittest.TestCase):
         self.assertIn("store_location", data[0])  # Ensure required keys are present
         self.assertIn("visit_count", data[0])
 
-    @patch(
-        "extract_data.get_data"
-    )  # Mock the 'get_data' function to simulate a failed response
-    def test_collect_traffic_data_404(self, mock_get_data):
-        # Simulate API returning 404 Not Found for the given store
-        mock_get_data.return_value = ("Not Found", 404)
+    @patch("extract_data.get_data")
+    @patch("extract_data.is_valid_sensor")
+    def test_store_location_not_found(self, mock_is_valid_sensor, mock_get_data):
+        # Set up mocks
+        mock_is_valid_sensor.return_value = False
+        mock_get_data.return_value = (0, 404)
 
-        start_date = date.today().replace(
-            day=1
-        )  # Use 1st of the current month as start date
-        store_location = "InvalidStore"
+        # Set start_date to a recent date to limit iteration
+        start_date = date.today() - timedelta(days=1)
 
-        # Patch 'date.today()' to simulate a short date range
-        with patch("extract_data.date") as mock_date:
-            mock_date.today.return_value = start_date.replace(
-                day=2
-            )  # Simulate today as 2nd
-            mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
-
-            # Call the function — it should exit early due to 404 and return an empty list
-            data = collect_traffic_data(store_location, start_date)
+        result = collect_traffic_data(
+            store_location="invalid_store",
+            sensor_id="dummy_sensor",
+            start_date=start_date,
+        )
 
         self.assertEqual(
-            data, []
-        )  # Assert that no data was collected due to invalid store
+            result, [], "Should return empty list when store location is invalid."
+        )
 
 
 if __name__ == "__main__":
