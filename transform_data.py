@@ -8,7 +8,7 @@ def load_sensor_data(path: str = "data/raw/") -> pd.DataFrame:
     """
     Loads and combines CSV files for multiple sensors into a single DataFrame.
     """
-    sensor_range = range(1, 9)
+    sensor_range = range(8)
     all_sensors_data = []
 
     for i in sensor_range:

@@ -28,8 +28,8 @@ def get_user_inputs() -> tuple[str, date, str]:
 
 
 def is_valid_sensor(sensor_id: str) -> bool:
-    """Checks whether the sensor_id is a valid number from 1 to 7."""
-    return sensor_id.isdigit() and 0 < int(sensor_id) < 8
+    """Checks whether the sensor_id is a valid number from 0 to 7."""
+    return sensor_id.isdigit() and 0 <= int(sensor_id) < 8
 
 
 def collect_traffic_data(
