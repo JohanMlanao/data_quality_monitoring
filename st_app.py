@@ -70,16 +70,24 @@ st.set_page_config(page_title=app_title)
 # Title the app
 st.title("Data quality monitoring")
 
-# Display the table and select a sensor
+# Display the table and select a location and a sensor
+available_location_df = con.execute("SELECT DISTINCT store_location, sensor_id from data").df()
 available_sensor_df = con.execute(
-    "SELECT DISTINCT sensor_id FROM data"
+    "SELECT DISTINCT sensor_id FROM available_location_df"
 ).df()
-sensor_id = st.selectbox(
-    "Please select a sensor to view (optional).",
-    np.sort(available_sensor_df["sensor_id"].unique()),
-    index=None,
-    placeholder="Select a sensor ID...",
-)
+with st.sidebar:
+    location = st.selectbox(
+        "Please select a location to view (optional).",
+        np.sort(available_location_df["store_location"].unique()),
+        index=None,
+        placeholder="Select a location...",
+    )
+    sensor_id = st.selectbox(
+        "Please select a sensor to view (optional).",
+        np.sort(available_sensor_df["sensor_id"].unique()),
+        index=None,
+        placeholder="Select a sensor ID...",
+    )
 
 sensor = get_sensor(current_sensor=sensor_id)
 # Display the sensor table
