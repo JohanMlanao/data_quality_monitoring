@@ -5,6 +5,7 @@ import duckdb
 import numpy as np
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 
 def create_database() -> None:
@@ -43,9 +44,9 @@ def get_sensor(current_sensor: str) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A DataFrame of sensors.
     """
-    if current_sensor:
+    if current_sensor or current_sensor == 0:
         select_sensor_query = (
-            f"SELECT * FROM data WHERE current_sensor = '{current_sensor}'"
+            f"SELECT * FROM data WHERE sensor_id = '{current_sensor}'"
         )
     else:
         select_sensor_query = "SELECT * FROM data"
@@ -69,16 +70,25 @@ st.set_page_config(page_title=app_title)
 # Title the app
 st.title("Data quality monitoring")
 
-# -- Set time by GPS or event
+# Display the table and select a sensor
 available_sensor_df = con.execute(
-    "SELECT DISTINCT sensor_idcurrent_sensor FROM data"
+    "SELECT DISTINCT sensor_id FROM data"
 ).df()
 sensor_id = st.selectbox(
     "Please select a sensor to view (optional).",
-    np.sort(available_sensor_df["sensor_idcurrent_sensor"].unique()),
+    np.sort(available_sensor_df["sensor_id"].unique()),
     index=None,
     placeholder="Select a sensor ID...",
 )
 
 sensor = get_sensor(current_sensor=sensor_id)
+# Display the sensor table
 st.write(sensor)
+
+# Display visit_count by date for each sensor
+fig = px.line(sensor,x="date", y ="visit_count", color="sensor_id")
+st.plotly_chart(fig, use_container_width=True)
+
+# Display moving average by date for each sensor
+fig = px.line(sensor,x="date", y ="moving_avg_4", color="sensor_id")
+st.plotly_chart(fig, use_container_width=True)
