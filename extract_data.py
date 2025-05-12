@@ -22,7 +22,7 @@ def get_user_inputs() -> tuple[str, date, str]:
     date_input = input("Please enter a date in the format DD-MM-YYYY: ")
     business_date = datetime.strptime(date_input, "%d-%m-%Y").date()
     sensor_id = input(
-        "To view sensor traffic, enter a number from 1 to 8, or press Enter to view all traffic: "
+        "To view sensor traffic, enter a number from 0 to 7, or press Enter to view all traffic: "
     )
     return store_location, business_date, sensor_id
 
