@@ -132,10 +132,9 @@ def save_data_by_month(data: list[dict], store_location: str, sensor_id: str):
 
     for (year, month), group_df in grouped.items():
         if is_valid_sensor(sensor_id):
-            filename = f"data/raw/data_{store_location}_{year}_{month:02}_sensor{sensor_id}.csv"
+            filename = f"~/data_quality_monitoring/data/raw/data_{store_location}_{year}_{month:02}_sensor{sensor_id}.csv"
         else:
-            filename = f"data/raw/data_{store_location}_{year}_{month:02}.csv"
-
+            filename = f"~/data_quality_monitoring/data/raw/data_{store_location}_{year}_{month:02}.csv"
         group_df.to_csv(filename, index=False)
 
 
