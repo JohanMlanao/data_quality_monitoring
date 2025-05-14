@@ -35,32 +35,27 @@ class TestExtractData(unittest.TestCase):
     @patch(
         "extract_data.get_data"
     )  # Mock the 'get_data' function in 'extract_data' module
-    def test_collect_traffic_data_valid(self, mock_get_data):
-        # Simulate a successful API response with visit_count = 5 and status code 200
-        mock_get_data.return_value = ("5", 200)
+    def test_collect_traffic_data_all_sensors_today(self, mock_get_data):
+        # Mock get_data to return consistent values
+        mock_get_data.return_value = (5, 200)
 
-        start_date = date.today().replace(
-            day=1
-        )  # Use 1st of the current month as start date
         store_location = "TestStore"
+        today = date(2025, 5, 14)  # fixed date for deterministic test
+        start_date = today  # same as today
 
-        # Patch the 'date.today()' call inside collect_traffic_data to control the end date
+        # Patch date.today inside the collect_traffic_data module
         with patch("extract_data.date") as mock_date:
-            mock_date.today.return_value = start_date.replace(
-                day=2
-            )  # Simulate today as 2nd
-            mock_date.side_effect = lambda *args, **kw: date(
-                *args, **kw
-            )  # Let date(...) still work normally
+            mock_date.today.return_value = today
+            mock_date.side_effect = lambda *args, **kwargs: date(*args, **kwargs)
 
-            # Call the function under test
-            data = collect_traffic_data(store_location, start_date)
+            data = collect_traffic_data(store_location, "all_sensors", start_date)
 
-        # Check that data is returned as a list of dictionaries
         self.assertIsInstance(data, list)
-        self.assertGreater(len(data), 0)  # Ensure we have at least one record
-        self.assertIn("store_location", data[0])  # Ensure required keys are present
+        self.assertGreater(len(data), 0)
+        self.assertIn("store_location", data[0])
+        self.assertIn("sensor_id", data[0])
         self.assertIn("visit_count", data[0])
+        self.assertIn("hour", data[0])
 
     @patch("extract_data.get_data")
     @patch("extract_data.is_valid_sensor")
