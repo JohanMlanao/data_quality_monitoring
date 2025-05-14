@@ -2,6 +2,7 @@ from datetime import date, datetime, timedelta
 
 import pandas as pd
 import requests
+import sys
 
 
 def get_data(business_parameter: str) -> tuple[str, int]:
@@ -17,13 +18,16 @@ def get_data(business_parameter: str) -> tuple[str, int]:
 
 
 def get_user_inputs() -> tuple[str, date, str]:
-    """Prompts the user for store location, date, and sensor ID input."""
-    store_location = input("Please enter the store location: ")
-    date_input = input("Please enter a date in the format DD-MM-YYYY: ")
-    business_date = datetime.strptime(date_input, "%d-%m-%Y").date()
-    sensor_id = input(
-        "To view sensor traffic, enter a number from 0 to 7, or press Enter to view all traffic: "
-    )
+    if len(sys.argv) > 1:
+        store_location, sensor_id, day, month, year = [
+            v for v in sys.argv[1].split("-")
+        ]
+        business_date = date(year=int(year), month=int(month), day=int(day))
+    else:
+        store_location = "Bordeaux"
+        sensor_id = "all_sensors"
+        business_date = date.today()
+
     return store_location, business_date, sensor_id
 
 
@@ -40,44 +44,83 @@ def collect_traffic_data(
     Returns a list of data rows.
     """
     data = []
-    current_date = start_date
     current_hour = 0
 
-    while current_date < date.today():
-        current_hour += 1
+    if sensor_id == "all_sensors" and start_date == date.today():
+        # Replace the day with 1 to get the first day of the month
+        first_day = start_date.replace(day=1)
+        last_day_previous_month = first_day - timedelta(days=1)
+        # Retrieve the first day of the previous month
+        current_date = last_day_previous_month.replace(day=1)
+        condition = current_date <= last_day_previous_month
+        while current_date <= last_day_previous_month:
+            current_hour += 1
+            if current_hour == 24:
+                current_date += timedelta(days=1)
+                current_hour = 0
+            if current_date > last_day_previous_month:
+                break
 
-        if current_hour == 24:
-            current_date += timedelta(days=1)
-            current_hour = 0
+            if current_hour < 8 or current_hour > 19:
+                for sensor in range(8):
+                    sensor_row = {
+                        "store_location": store_location,
+                        "sensor_id": sensor,
+                        "visit_count": 0,
+                        "hour": current_hour,
+                        "day": current_date.day,
+                        "month": current_date.month,
+                        "year": current_date.year,
+                    }
+                    data.append(sensor_row)
+            else:
+                for sensor in range(8):
+                    params = (
+                        f"store_location={store_location}"
+                        f"&year={current_date.year}&month={current_date.month}&day={current_date.day}&sensor_id={sensor}"
+                    )
+                    visit_count, status = get_data(business_parameter=params)
+                    sensor_row = {
+                        "store_location": store_location,
+                        "sensor_id": sensor,
+                        "visit_count": visit_count,
+                        "hour": current_hour,
+                        "day": current_date.day,
+                        "month": current_date.month,
+                        "year": current_date.year,
+                    }
+                    data.append(sensor_row)
+    else:
+        current_date = start_date
+        while current_date <= date.today():
+            if current_hour < 8 or current_hour > 19:
+                visit_count = 0
+            elif is_valid_sensor(sensor_id):
+                params = (
+                    f"store_location={store_location}"
+                    f"&year={current_date.year}&month={current_date.month}&day={current_date.day}&sensor_id={sensor_id}"
+                )
+                visit_count, status = get_data(business_parameter=params)
+            else:
+                params = (
+                    f"store_location={store_location}"
+                    f"&year={current_date.year}&month={current_date.month}&day={current_date.day}"
+                )
+                visit_count, status = get_data(business_parameter=params)
 
-        if current_hour < 8 or current_hour > 19:
-            visit_count = 0
-        elif is_valid_sensor(sensor_id):
-            params = (
-                f"store_location={store_location}"
-                f"&year={current_date.year}&month={current_date.month}&day={current_date.day}&sensor_id={sensor_id}"
-            )
-            visit_count, status = get_data(business_parameter=params)
-        else:
-            params = (
-                f"store_location={store_location}"
-                f"&year={current_date.year}&month={current_date.month}&day={current_date.day}"
-            )
-            visit_count, status = get_data(business_parameter=params)
+                if status == 404:
+                    print("\nThe specified store location could not be found.")
+                    return []
 
-            if status == 404:
-                print("\nThe specified store location could not be found.")
-                return []
-
-        row = {
-            "store_location": store_location,
-            "visit_count": visit_count,
-            "hour": current_hour,
-            "day": current_date.day,
-            "month": current_date.month,
-            "year": current_date.year,
-        }
-        data.append(row)
+            row = {
+                "store_location": store_location,
+                "visit_count": visit_count,
+                "hour": current_hour,
+                "day": current_date.day,
+                "month": current_date.month,
+                "year": current_date.year,
+            }
+            data.append(row)
 
     return data
 
