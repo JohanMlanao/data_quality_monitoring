@@ -45,9 +45,7 @@ def get_sensor(current_sensor: str) -> pd.DataFrame:
         pd.DataFrame: A DataFrame of sensors.
     """
     if current_sensor or current_sensor == 0:
-        select_sensor_query = (
-            f"SELECT * FROM data WHERE sensor_id = '{current_sensor}'"
-        )
+        select_sensor_query = f"SELECT * FROM data WHERE sensor_id = '{current_sensor}'"
     else:
         select_sensor_query = "SELECT * FROM data"
     user_sensor = (
@@ -71,7 +69,9 @@ st.set_page_config(page_title=app_title)
 st.title("Data quality monitoring")
 
 # Display the table and select a location and a sensor
-available_location_df = con.execute("SELECT DISTINCT store_location, sensor_id from data").df()
+available_location_df = con.execute(
+    "SELECT DISTINCT store_location, sensor_id from data"
+).df()
 available_sensor_df = con.execute(
     "SELECT DISTINCT sensor_id FROM available_location_df"
 ).df()
@@ -94,9 +94,9 @@ sensor = get_sensor(current_sensor=sensor_id)
 st.write(sensor)
 
 # Display visit_count by date for each sensor
-fig = px.line(sensor,x="date", y ="visit_count", color="sensor_id")
+fig = px.line(sensor, x="date", y="visit_count", color="sensor_id")
 st.plotly_chart(fig, use_container_width=True)
 
 # Display moving average by date for each sensor
-fig = px.line(sensor,x="date", y ="moving_avg_4", color="sensor_id")
+fig = px.line(sensor, x="date", y="moving_avg_4", color="sensor_id")
 st.plotly_chart(fig, use_container_width=True)

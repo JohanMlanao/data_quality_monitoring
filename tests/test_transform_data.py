@@ -3,9 +3,12 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from transform_data import (add_moving_average_and_change,
-                            aggregate_daily_visits, load_sensor_data,
-                            prepare_date_column)
+from transform_data import (
+    add_moving_average_and_change,
+    aggregate_daily_visits,
+    load_data,
+    prepare_date_column,
+)
 
 
 class TestTransformData(unittest.TestCase):
@@ -13,7 +16,7 @@ class TestTransformData(unittest.TestCase):
     @patch("glob.glob")
     @patch("pandas.concat")
     @patch("pandas.read_csv")
-    def test_load_sensor_data(self, mock_read_csv, mock_concat, mock_glob):
+    def test_load_data(self, mock_read_csv, mock_concat, mock_glob):
         # Mocking glob to simulate the presence of CSV files
         mock_glob.return_value = ["file1.csv", "file2.csv"]
 
@@ -42,7 +45,7 @@ class TestTransformData(unittest.TestCase):
         )
 
         # Test
-        df = load_sensor_data(path="data/raw/")
+        df = load_data(path="data/raw/")
         self.assertFalse(df.empty)
         self.assertIn("sensor_id", df.columns)
         self.assertEqual(df.shape[0], 2)
@@ -100,7 +103,7 @@ class TestTransformData(unittest.TestCase):
     def test_load_sensor_data_empty(self):
         # Test case for when no CSV files are found
         with patch("glob.glob", return_value=[]):
-            df = load_sensor_data(path="data/raw/")
+            df = load_data(path="data/raw/")
             self.assertTrue(df.empty)
 
 
