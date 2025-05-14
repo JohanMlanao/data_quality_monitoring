@@ -7,7 +7,7 @@ with DAG(
     dag_id="data_quality_monitoring",
     schedule="0 8 1 * *",
     catchup=False,
-    start_date=datetime.datetime(2025,5,1),
+    start_date=datetime.datetime(2025,1,1),
     dagrun_timeout=datetime.timedelta(minutes=60),
 ) as dag:
     first_task = BashOperator(
