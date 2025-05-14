@@ -4,26 +4,15 @@ import os
 import pandas as pd
 
 
-def load_sensor_data(path: str = "data/raw/") -> pd.DataFrame:
+def load_data(path: str = "data/raw/") -> pd.DataFrame:
     """
-    Loads and combines CSV files for multiple sensors into a single DataFrame.
+    Loads and combines CSV files into a single DataFrame.
     """
-    sensor_range = range(8)
-    all_sensors_data = []
-
-    for i in sensor_range:
-        csv_files = glob.glob(os.path.join(path, f"*_sensor{i}.csv"))
-        if not csv_files:
-            continue
-        sensor_data = pd.concat(map(pd.read_csv, csv_files))
-        sensor_data["sensor_id"] = i
-        all_sensors_data.append(sensor_data)
-
-    return (
-        pd.concat(all_sensors_data, ignore_index=True)
-        if all_sensors_data
-        else pd.DataFrame()
-    )
+    csv_files = glob.glob(os.path.join(path, "*.csv"))
+    if not csv_files:
+        return pd.DataFrame()
+    else:
+        return pd.concat(map(pd.read_csv, csv_files))
 
 
 def prepare_date_column(df: pd.DataFrame) -> pd.DataFrame:
@@ -97,7 +86,7 @@ def add_moving_average_and_change(df_day: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
-    df = load_sensor_data()
+    df = load_data()
     if not df.empty:
         df = prepare_date_column(df)
         df_day = aggregate_daily_visits(df)
