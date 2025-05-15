@@ -3,8 +3,8 @@ import unittest
 from datetime import date
 from unittest.mock import MagicMock, mock_open, patch
 
-from manual_extract import (collect_traffic_data, create_folder, get_data,
-                            is_valid_sensor, save_data_by_month)
+from manual_extract_data import (collect_traffic_data, create_folder, get_data,
+                                 is_valid_sensor, save_data_by_month)
 
 
 class TestTrafficDataScript(unittest.TestCase):
