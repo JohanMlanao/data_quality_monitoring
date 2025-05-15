@@ -32,8 +32,8 @@ def get_user_inputs() -> tuple[str, date, str]:
 
 
 def is_valid_sensor(sensor_id: str) -> bool:
-    """Checks whether the sensor_id is a valid number from 0 to 7."""
-    return sensor_id.isdigit() and 0 <= int(sensor_id) < 8
+    """Checks whether the sensor_id is a valid number from 0 to 4."""
+    return sensor_id.isdigit() and 0 <= int(sensor_id) < 4
 
 
 def collect_traffic_data(
@@ -62,7 +62,7 @@ def collect_traffic_data(
                 break
 
             if current_hour < 8 or current_hour > 19:
-                for sensor in range(8):
+                for sensor in range(4):
                     sensor_row = {
                         "store_location": store_location,
                         "sensor_id": sensor,
@@ -74,7 +74,7 @@ def collect_traffic_data(
                     }
                     data.append(sensor_row)
             else:
-                for sensor in range(8):
+                for sensor in range(4):
                     params = (
                         f"store_location={store_location}"
                         f"&year={current_date.year}&month={current_date.month}&day={current_date.day}&sensor_id={sensor}"

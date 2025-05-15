@@ -23,13 +23,13 @@ class StoreSensor:
         np.random.seed(seed=seed)
 
         # 80/20: most people take the main entrance
-        traffic_percentage = [0.48, 0.30, 0.05, 0.03, 0.01, 0.02, 0.1, 0.01]
+        traffic_percentage = [0.58, 0.30, 0.07, 0.05]
         np.random.shuffle(traffic_percentage)
 
         # Initialization of the store's sensors
         # To keep things simple, we assume each store has eight sensors
         # Otherwise we would need to dynamically create traffic_percentages that sum to 1
-        for i in range(8):
+        for i in range(4):
             sensor = VisitSensor(
                 traffic_percentage[i] * avg_visit,
                 traffic_percentage[i] * std_visit,
@@ -44,4 +44,4 @@ class StoreSensor:
 
     def get_all_traffic(self, business_date: date) -> int:
         """Return the traffic for all store sensors at a date"""
-        return sum([self.sensors[i].get_visit_count(business_date) for i in range(8)])
+        return sum([self.sensors[i].get_visit_count(business_date) for i in range(4)])

@@ -19,9 +19,9 @@ def visit(
         return JSONResponse(status_code=404, content="Store Not Found")
 
     # Check the value of sensor_id
-    if sensor_id and (sensor_id > 7 or sensor_id < 0):
+    if sensor_id and (sensor_id > 3 or sensor_id < 0):
         return JSONResponse(
-            status_code=404, content="Sensor_id should be between 0 and 7"
+            status_code=404, content="Sensor_id should be between 0 and 3"
         )
 
     # Check the year
