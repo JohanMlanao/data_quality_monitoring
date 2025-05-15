@@ -33,11 +33,16 @@ def aggregate_daily_visits(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return df
 
-    df_day = (
-        df.groupby(by=["store_location", "sensor_id", "date"])["visit_count"]
-        .sum()
-        .reset_index()
-    )
+    if df["sensor_id"]:
+        df_day = (
+            df.groupby(by=["store_location", "sensor_id", "date"])["visit_count"]
+            .sum()
+            .reset_index()
+        )
+    else:
+        df_day = (
+            df.groupby(by=["store_location", "date"])["visit_count"].sum().reset_index()
+        )
 
     df_day.dropna(inplace=True)
     df_day = df_day.query("visit_count > 0")
@@ -55,13 +60,20 @@ def add_moving_average_and_change(df_day: pd.DataFrame) -> pd.DataFrame:
     """
     if df_day.empty:
         return df_day
-
-    df_day["moving_avg_4"] = (
-        df_day.groupby(by=["day_of_week", "sensor_id"])["visit_count"]
-        .rolling(window=4, min_periods=1)
-        .mean()
-        .reset_index(level=[0, 1], drop=True)
-    )
+    if df_day["sensor_id"]:
+        df_day["moving_avg_4"] = (
+            df_day.groupby(by=["day_of_week", "sensor_id"])["visit_count"]
+            .rolling(window=4, min_periods=1)
+            .mean()
+            .reset_index(level=[0, 1], drop=True)
+        )
+    else:
+        df_day["moving_avg_4"] = (
+            df_day.groupby(by=["day_of_week"])["visit_count"]
+            .rolling(window=4, min_periods=1)
+            .mean()
+            .reset_index(level=[0, 1], drop=True)
+        )
 
     df_day["pct_change"] = df_day.apply(
         lambda x: (
@@ -71,18 +83,29 @@ def add_moving_average_and_change(df_day: pd.DataFrame) -> pd.DataFrame:
         ),
         axis=1,
     )
-
-    return df_day[
-        [
-            "store_location",
-            "sensor_id",
-            "date",
-            "day_of_week",
-            "visit_count",
-            "moving_avg_4",
-            "pct_change",
+    if df_day["sensor_id"]:
+        return df_day[
+            [
+                "store_location",
+                "sensor_id",
+                "date",
+                "day_of_week",
+                "visit_count",
+                "moving_avg_4",
+                "pct_change",
+            ]
         ]
-    ]
+    else:
+        return df_day[
+            [
+                "store_location",
+                "date",
+                "day_of_week",
+                "visit_count",
+                "moving_avg_4",
+                "pct_change",
+            ]
+        ]
 
 
 def main():
