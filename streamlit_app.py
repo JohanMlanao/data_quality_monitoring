@@ -1,4 +1,3 @@
-import logging
 import os
 
 import duckdb
@@ -10,22 +9,13 @@ import streamlit as st
 
 def create_database() -> None:
     """
-    Ensures the existence of the 'data' directory and the DuckDB database file.
-
     This function performs the following checks and actions:
-    - Creates the 'data' directory if it does not exist.
     - Checks for the existence of the 'data.duckdb' database file within the 'data' directory.
     - If the database file does not exist, it establishes a connection to DuckDB, creates the database and create the table from a pre-existing Parquet file ('data/processed/data.parquet').
-
-    Logs errors if the 'data' directory is missing and when the database creation process occurs.
 
     Returns:
         None
     """
-    if "data" not in os.listdir():
-        logging.error(os.listdir())
-        logging.error("creating folder data")
-        os.mkdir("data")
     if "data.duckdb" not in os.listdir("data"):
         init_db = duckdb.connect(database="data/data.duckdb", read_only=False)
         init_db.execute(

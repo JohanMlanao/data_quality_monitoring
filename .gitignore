@@ -1,6 +1,5 @@
 .idea/
 venv*/
 *.csv
-*.parquet
 *__pycache__
 data/data.duckdb
