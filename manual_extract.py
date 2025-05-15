@@ -43,14 +43,14 @@ def get_user_inputs() -> tuple[str, date, str]:
     date_input = input("Please enter a date in the format DD-MM-YYYY: ")
     business_date = datetime.strptime(date_input, "%d-%m-%Y").date()
     sensor_id = input(
-        "To view sensor traffic, enter a number from 0 to 3, or press Enter to view all traffic: "
+        "To view sensor traffic, enter a letter from A to D, or press Enter to view all traffic: "
     )
     return store_location, business_date, sensor_id
 
 
 def is_valid_sensor(sensor_id: str) -> bool:
     """Checks whether the sensor_id is a valid number from 0 to 4."""
-    return sensor_id.isdigit() and 0 <= int(sensor_id) < 4
+    return sensor_id in ["A", "B", "C", "D"]
 
 
 def collect_traffic_data(

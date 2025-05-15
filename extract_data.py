@@ -38,15 +38,15 @@ def get_data(business_parameter: str) -> tuple[str, int]:
     return r.text, r.status_code
 
 
-def get_input() -> tuple[list[str], date, list[int]]:
+def get_input() -> tuple[list[str], date, list[str]]:
     store_locations = ["Lille", "Paris", "Lyon", "Bordeaux", "Marseille"]
-    sensors = [0, 1, 2, 3]
+    sensors = ["A", "B", "C", "D"]
     business_date = date.today()
     return store_locations, business_date, sensors
 
 
 def collect_traffic_data(
-    store_locations: list[str], sensors: list[int], start_date: date
+    store_locations: list[str], sensors: list[str], start_date: date
 ) -> list[dict]:
     """
     Iterates from start_date to today, hour by hour, collecting traffic data.

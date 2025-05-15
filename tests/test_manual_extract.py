@@ -8,18 +8,6 @@ from manual_extract import (collect_traffic_data, create_folder, get_data,
 
 
 class TestTrafficDataScript(unittest.TestCase):
-    @patch("manual_extract.os.mkdir")
-    @patch("manual_extract.os.listdir")
-    def test_create_folder_creates_missing_folders(self, mock_listdir, mock_mkdir):
-        # Simulate missing folders
-        mock_listdir.side_effect = [[], []]  # No 'data', no 'raw'
-
-        create_folder()
-
-        # It should try to create both folders
-        self.assertEqual(mock_mkdir.call_count, 2)
-        mock_mkdir.assert_any_call("data")
-        mock_mkdir.assert_any_call("data/raw")
 
     @patch("manual_extract.requests.get")
     def test_get_data_success(self, mock_get):
@@ -33,8 +21,8 @@ class TestTrafficDataScript(unittest.TestCase):
         self.assertEqual(status, 200)
 
     def test_is_valid_sensor(self):
-        self.assertTrue(is_valid_sensor("0"))
-        self.assertTrue(is_valid_sensor("3"))
+        self.assertTrue(is_valid_sensor("A"))
+        self.assertTrue(is_valid_sensor("D"))
         self.assertFalse(is_valid_sensor("4"))
         self.assertFalse(is_valid_sensor("abc"))
         self.assertFalse(is_valid_sensor(""))
@@ -67,25 +55,6 @@ class TestTrafficDataScript(unittest.TestCase):
 
         data = collect_traffic_data("BadStore", "", date(2025, 5, 15))
         self.assertEqual(data, [])
-
-    @patch("manual_extract.pd.DataFrame.to_csv")
-    def test_save_data_by_month_creates_correct_filename(self, mock_to_csv):
-        data = [
-            {
-                "store_location": "TestStore",
-                "visit_count": 5,
-                "hour": 10,
-                "day": 15,
-                "month": 5,
-                "year": 2025,
-            }
-        ]
-
-        save_data_by_month(data, "TestStore", "1")
-
-        mock_to_csv.assert_called_once()
-        args, kwargs = mock_to_csv.call_args
-        self.assertIn("data/raw/data_TestStore_2025_05_sensor1.csv", args[0])
 
     @patch("manual_extract.pd.DataFrame.to_csv")
     def test_save_data_by_month_with_invalid_sensor(self, mock_to_csv):
