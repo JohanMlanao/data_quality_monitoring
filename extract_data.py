@@ -1,8 +1,29 @@
-from datetime import date, datetime, timedelta
+import logging
+import os
+from datetime import date, timedelta
 from itertools import product
 
 import pandas as pd
 import requests
+
+
+def create_folder():
+    """
+    Creates necessary folders for the folder if they do not already exist.
+    Specifically, it ensures the existence of the following directory structure:
+    - A 'data' directory in the current working directory.
+    - A 'raw' subdirectory inside the 'data' directory.
+    If either of these directories is missing, the function logs the current directory contents
+    and creates the missing folder(s).
+    """
+    if "data" not in os.listdir():
+        logging.error(os.listdir())
+        logging.error("creating folder data")
+        os.mkdir("data")
+    if "raw" not in os.listdir("data"):
+        logging.error(os.listdir())
+        logging.error("creating folder raw")
+        os.mkdir("data/raw")
 
 
 def get_data(business_parameter: str) -> tuple[str, int]:
@@ -90,6 +111,7 @@ def save_data_by_month(data: list[dict]):
 
 
 def main():
+    create_folder()
     store_location, business_date, sensor_id = get_input()
 
     data = collect_traffic_data(store_location, sensor_id, business_date)
