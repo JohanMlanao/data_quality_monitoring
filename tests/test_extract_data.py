@@ -68,7 +68,9 @@ class TestExtractData(unittest.TestCase):
             data = collect_traffic_data(store_locations, sensors, start_date)
 
         # Filter for non-business hours
-        non_business_hours = [row for row in data if row["hour"] < 8 or row["hour"] > 19]
+        non_business_hours = [
+            row for row in data if row["hour"] < 8 or row["hour"] > 19
+        ]
         self.assertTrue(all(row["visit_count"] == 0 for row in non_business_hours))
 
     @patch("extract_data.get_data")
@@ -89,7 +91,9 @@ class TestExtractData(unittest.TestCase):
         # Assert get_data was called exactly for each business-hour slot in the month
         expected_days = 30  # April has 30 days
         expected_hours = 12  # From 8 to 19 inclusive
-        expected_calls = expected_days * expected_hours * len(store_locations) * len(sensors)
+        expected_calls = (
+            expected_days * expected_hours * len(store_locations) * len(sensors)
+        )
 
         self.assertEqual(mock_get_data.call_count, expected_calls)
 

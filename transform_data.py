@@ -92,7 +92,9 @@ def main():
         df_day = aggregate_daily_visits(df)
         df_day = add_moving_average_and_change(df_day)
         print(df_day.sort_values(by="date"))
-        df_day.to_parquet(path="~/data_quality_monitoring/data/processed/data.parquet", index=False)
+        df_day.to_parquet(
+            path="~/data_quality_monitoring/data/processed/data.parquet", index=False
+        )
     else:
         print("Input DataFrame is empty — skipping processing.")
 

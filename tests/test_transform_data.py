@@ -3,12 +3,9 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from transform_data import (
-    add_moving_average_and_change,
-    aggregate_daily_visits,
-    load_data,
-    prepare_date_column,
-)
+from transform_data import (add_moving_average_and_change,
+                            aggregate_daily_visits, load_data,
+                            prepare_date_column)
 
 
 class TestTransformData(unittest.TestCase):

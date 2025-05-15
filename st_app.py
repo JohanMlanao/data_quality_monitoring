@@ -4,8 +4,8 @@ import os
 import duckdb
 import numpy as np
 import pandas as pd
-import streamlit as st
 import plotly.express as px
+import streamlit as st
 
 
 def create_database() -> None:
