@@ -3,18 +3,23 @@ import unittest
 from datetime import date
 from unittest.mock import MagicMock, mock_open, patch
 
-from manual_extract import (collect_traffic_data, create_database, get_data,
-                            is_valid_sensor, save_data_by_month)
+from manual_extract import (
+    collect_traffic_data,
+    create_folder,
+    get_data,
+    is_valid_sensor,
+    save_data_by_month,
+)
 
 
 class TestTrafficDataScript(unittest.TestCase):
     @patch("manual_extract.os.mkdir")
     @patch("manual_extract.os.listdir")
-    def test_create_database_creates_missing_folders(self, mock_listdir, mock_mkdir):
+    def test_create_folder_creates_missing_folders(self, mock_listdir, mock_mkdir):
         # Simulate missing folders
         mock_listdir.side_effect = [[], []]  # No 'data', no 'raw'
 
-        create_database()
+        create_folder()
 
         # It should try to create both folders
         self.assertEqual(mock_mkdir.call_count, 2)
