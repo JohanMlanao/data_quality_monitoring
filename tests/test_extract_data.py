@@ -2,80 +2,96 @@ import unittest
 from datetime import date, timedelta
 from unittest.mock import MagicMock, patch
 
-from extract_data import collect_traffic_data, get_data, is_valid_sensor
+from extract_data import collect_traffic_data, get_data
 
 
 class TestExtractData(unittest.TestCase):
-
-    def test_is_valid_sensor(self):
-        self.assertTrue(is_valid_sensor("1"))
-        self.assertTrue(is_valid_sensor("7"))
-        self.assertFalse(is_valid_sensor("0"))
-        self.assertFalse(is_valid_sensor("8"))
-        self.assertFalse(is_valid_sensor("abc"))
-        self.assertFalse(is_valid_sensor(""))
-
-    @patch("extract_data.requests.get")  # Mock 'requests.get' in your module
+    @patch("extract_data.requests.get")  # Mock 'requests.get'
     def test_get_data_success(self, mock_get):
-        # Create a mock response object to simulate a successful API call
+        # Mock a successful HTTP response
         mock_response = MagicMock()
-        mock_response.text = "some text"  # Simulate response body
-        mock_response.status_code = 200  # Simulate HTTP 200 OK
-
-        # Set the mock to return the mock response when called
+        mock_response.text = "42"  # Simulated visit_count
+        mock_response.status_code = 200
         mock_get.return_value = mock_response
 
-        # Call the actual function with a test parameter
         text, status = get_data("store_location=test")
+        self.assertEqual(text, "42")
+        self.assertEqual(status, 200)
 
-        # Verify the function correctly returns the mocked response values
-        self.assertEqual(text, "some text")  # Check if response text is as expected
-        self.assertEqual(status, 200)  # Check if status code is as expected
+    @patch("extract_data.get_data")
+    def test_collect_traffic_data_previous_month(self, mock_get_data):
+        # Always return 7 as dummy visit count
+        mock_get_data.return_value = ("7", 200)
 
-    @patch(
-        "extract_data.get_data"
-    )  # Mock the 'get_data' function in 'extract_data' module
-    def test_collect_traffic_data_all_sensors_today(self, mock_get_data):
-        # Mock get_data to return consistent values
-        mock_get_data.return_value = (5, 200)
+        # Use fixed "today" for deterministic previous month calculations
+        today = date(2025, 5, 15)
+        start_date = today  # It's only used to compute the previous month
 
-        store_location = "TestStore"
-        today = date(2025, 5, 14)  # fixed date for deterministic test
-        start_date = today  # same as today
+        store_locations = ["TestStore"]
+        sensors = [0]
 
-        # Patch date.today inside the collect_traffic_data module
+        # Patch `date.today()` in the extract_data module
         with patch("extract_data.date") as mock_date:
             mock_date.today.return_value = today
             mock_date.side_effect = lambda *args, **kwargs: date(*args, **kwargs)
 
-            data = collect_traffic_data(store_location, "all_sensors", start_date)
+            data = collect_traffic_data(store_locations, sensors, start_date)
 
         self.assertIsInstance(data, list)
         self.assertGreater(len(data), 0)
-        self.assertIn("store_location", data[0])
-        self.assertIn("sensor_id", data[0])
-        self.assertIn("visit_count", data[0])
-        self.assertIn("hour", data[0])
+
+        sample = data[0]
+        self.assertIn("store_location", sample)
+        self.assertIn("sensor_id", sample)
+        self.assertIn("visit_count", sample)
+        self.assertIn("hour", sample)
+
+        # Ensure all data is from the previous month
+        for row in data:
+            self.assertEqual(row["month"], 4)  # April
+            self.assertEqual(row["year"], 2025)
 
     @patch("extract_data.get_data")
-    @patch("extract_data.is_valid_sensor")
-    def test_store_location_not_found(self, mock_is_valid_sensor, mock_get_data):
-        # Set up mocks
-        mock_is_valid_sensor.return_value = False
-        mock_get_data.return_value = (0, 404)
+    def test_collect_data_outside_business_hours(self, mock_get_data):
+        # Return value won't be used for non-business hours
+        mock_get_data.return_value = ("999", 200)
 
-        # Set start_date to a recent date to limit iteration
-        start_date = date.today() - timedelta(days=1)
+        today = date(2025, 5, 15)
+        start_date = today
+        store_locations = ["TestStore"]
+        sensors = [1]
 
-        result = collect_traffic_data(
-            store_location="invalid_store",
-            sensor_id="dummy_sensor",
-            start_date=start_date,
-        )
+        with patch("extract_data.date") as mock_date:
+            mock_date.today.return_value = today
+            mock_date.side_effect = lambda *args, **kwargs: date(*args, **kwargs)
 
-        self.assertEqual(
-            result, [], "Should return empty list when store location is invalid."
-        )
+            data = collect_traffic_data(store_locations, sensors, start_date)
+
+        # Filter for non-business hours
+        non_business_hours = [row for row in data if row["hour"] < 8 or row["hour"] > 19]
+        self.assertTrue(all(row["visit_count"] == 0 for row in non_business_hours))
+
+    @patch("extract_data.get_data")
+    def test_collect_data_business_hours_calls_get_data(self, mock_get_data):
+        mock_get_data.return_value = ("3", 200)
+
+        today = date(2025, 5, 15)
+        start_date = today
+        store_locations = ["A"]
+        sensors = [1]
+
+        with patch("extract_data.date") as mock_date:
+            mock_date.today.return_value = today
+            mock_date.side_effect = lambda *args, **kwargs: date(*args, **kwargs)
+
+            collect_traffic_data(store_locations, sensors, start_date)
+
+        # Assert get_data was called exactly for each business-hour slot in the month
+        expected_days = 30  # April has 30 days
+        expected_hours = 12  # From 8 to 19 inclusive
+        expected_calls = expected_days * expected_hours * len(store_locations) * len(sensors)
+
+        self.assertEqual(mock_get_data.call_count, expected_calls)
 
 
 if __name__ == "__main__":
