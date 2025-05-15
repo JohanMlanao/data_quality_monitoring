@@ -2,7 +2,7 @@ from datetime import date
 
 import numpy as np
 
-from src.sensor import VisitSensor
+from src.sensor import (VisitSensor)
 
 
 class StoreSensor:
@@ -16,7 +16,7 @@ class StoreSensor:
     ) -> None:
         """Initialize a store"""
         self.name = location
-        self.sensors = list()
+        self.sensors = dict()
 
         # To always get the same result when asking for the same store
         seed = np.sum(list(self.name.encode("ascii")))
@@ -29,19 +29,20 @@ class StoreSensor:
         # Initialization of the store's sensors
         # To keep things simple, we assume each store has eight sensors
         # Otherwise we would need to dynamically create traffic_percentages that sum to 1
-        for i in range(4):
+        sensor_labels = ['A', 'B', 'C', 'D']
+        for i, label in enumerate(sensor_labels):
             sensor = VisitSensor(
                 traffic_percentage[i] * avg_visit,
                 traffic_percentage[i] * std_visit,
                 perc_malfunction,
                 perc_break,
             )
-            self.sensors.append(sensor)
+            self.sensors[label] = sensor
 
-    def get_sensor_traffic(self, sensor_id: int, business_date: date) -> int:
+    def get_sensor_traffic(self, sensor_id: str, business_date: date) -> int:
         """Return the traffic for one sensor at a date"""
         return self.sensors[sensor_id].get_visit_count(business_date)
 
     def get_all_traffic(self, business_date: date) -> int:
         """Return the traffic for all store sensors at a date"""
-        return sum([self.sensors[i].get_visit_count(business_date) for i in range(4)])
+        return sum([self.sensors[i].get_visit_count(business_date) for i in ["A", "B", "C", "D"]])

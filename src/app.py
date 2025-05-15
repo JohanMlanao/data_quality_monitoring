@@ -12,16 +12,16 @@ app = FastAPI()
 
 @app.get("/")
 def visit(
-    store_location: str, year: int, month: int, day: int, sensor_id: int | None = None
+    store_location: str, year: int, month: int, day: int, sensor_id: str | None = None
 ) -> JSONResponse:
     # If the store is not in the dictionary
     if not (store_location in store_dict.keys()):
         return JSONResponse(status_code=404, content="Store Not Found")
 
     # Check the value of sensor_id
-    if sensor_id and (sensor_id > 3 or sensor_id < 0):
+    if sensor_id and (sensor_id not in ["A", "B", "C", "D"]):
         return JSONResponse(
-            status_code=404, content="Sensor_id should be between 0 and 3"
+            status_code=404, content="Sensor_id should be A, B, C or D"
         )
 
     # Check the year
