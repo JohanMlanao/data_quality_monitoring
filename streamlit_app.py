@@ -23,25 +23,33 @@ def create_database() -> None:
         )
 
 
-def get_sensor(current_sensor: str) -> pd.DataFrame:
+def get_table(current_store: str, current_sensor: str) -> pd.DataFrame:
     """
-    Retrieves sensors matching the given ID.
+    Retrieves stores and sensors matching the given ID.
 
     Args:
+        current_store (str): Location of the store (Bordeaux, Lyon, Marseille).
+            If empty, retrieves all stores.
         current_sensor (str): ID of the sensor (e.g. 1-8).
             If empty, retrieves all sensors.
 
     Returns:
-        pd.DataFrame: A DataFrame of sensors.
+        pd.DataFrame: A DataFrame of specific stores and sensors.
     """
-    if current_sensor or current_sensor == 0:
-        select_sensor_query = f"SELECT * FROM data WHERE sensor_id = '{current_sensor}'"
+    if current_store and current_sensor:
+        select_data_query = f"SELECT * FROM data WHERE store_location = '{current_store}' and sensor_id = '{current_sensor}'"
+    elif current_store:
+        select_data_query = (
+            f"SELECT * FROM data WHERE store_location = '{current_store}'"
+        )
+    elif current_sensor:
+        select_data_query = f"SELECT * FROM data WHERE sensor_id = '{current_sensor}'"
     else:
-        select_sensor_query = "SELECT * FROM data"
-    user_sensor = (
-        con.execute(select_sensor_query).df().sort_values("date").reset_index(drop=True)
+        select_data_query = "SELECT * FROM data"
+    user_selection = (
+        con.execute(select_data_query).df().sort_values("date").reset_index(drop=True)
     )
-    return user_sensor
+    return user_selection
 
 
 # Creation of the database
@@ -79,7 +87,8 @@ with st.sidebar:
         placeholder="Select a sensor ID...",
     )
 
-sensor = get_sensor(current_sensor=sensor_id)
+data = get_table(current_store=location, current_sensor=sensor_id)
+
 # Display the sensor table
 st.write(sensor)
 
