@@ -1,13 +1,17 @@
 # Data Quality Monitoring 
 
-## Overview
+## ![Overview Icon](https://img.icons8.com/ios-filled/24/000000/overview-pages-3.png) Overview
 
 This project simulates a real-world **data quality monitoring workflow** using a complete data pipeline. The pipeline automates data extraction, transformation, and visualization, providing insights into data quality issues.
+
+---
 
 ## Live Demo
 
 Check out the interactive Streamlit dashboard here:  
 [Streamlit app](https://data-quality-monitoring-2025.streamlit.app/)
+
+---
 
 ## Architecture
 
@@ -35,7 +39,7 @@ The pipeline consists of the following steps:
 
 ---
 
-## Tech Stack
+## ![Tech Stack Icon](https://img.icons8.com/ios-filled/24/000000/technology.png) Tech Stack
 
 - **FastAPI** — Simulated data source API  
 - **Python & Pandas** — Data extraction, transformation, and storage  
