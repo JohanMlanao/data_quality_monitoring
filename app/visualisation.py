@@ -87,29 +87,38 @@ data = get_table(current_store=location, current_sensor=sensor_id)
 st.subheader("Store Information")
 st.write(data)
 
-data['legend_label'] = data['store_location'] + ' - ' + data['sensor_id']
+data["legend_label"] = data["store_location"] + " - " + data["sensor_id"]
 # Display visit_count by date for each store
-fig = px.line(data, x="date", y="visit_count", color="legend_label",
-    title='Visitor Count Over Time by Location and Sensor')
+fig = px.line(
+    data,
+    x="date",
+    y="visit_count",
+    color="legend_label",
+    title="Visitor Count Over Time by Location and Sensor",
+)
 
 fig.update_layout(
-    xaxis_title='Date',
-    yaxis_title='Visitor Count',
-    legend_title='Location - Sensor',
+    xaxis_title="Date",
+    yaxis_title="Visitor Count",
+    legend_title="Location - Sensor",
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
 
-
 # Display moving average by date for each store
-fig = px.line(data, x="date", y="moving_avg_4", color="legend_label",
-    title='Moving Average for each Day of the Week Over Time by Location and Sensor')
+fig = px.line(
+    data,
+    x="date",
+    y="moving_avg_4",
+    color="legend_label",
+    title="Moving Average for each Day of the Week Over Time by Location and Sensor",
+)
 
 fig.update_layout(
-    xaxis_title='Date',
-    yaxis_title='Moving Average',
-    legend_title='Location - Sensor',
+    xaxis_title="Date",
+    yaxis_title="Moving Average",
+    legend_title="Location - Sensor",
 )
 
 st.plotly_chart(fig, use_container_width=True)

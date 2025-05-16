@@ -4,17 +4,23 @@ from design import page_header, show_footer
 st.set_page_config(layout="wide")
 
 # Title
-page_header("Data Quality Monitoring", "An end-to-end pipeline for clean and reliable data")
+page_header(
+    "Data Quality Monitoring", "An end-to-end pipeline for clean and reliable data"
+)
 
 # Project Overview
 st.markdown("### 🧠 Project Overview")
-st.markdown("""
+st.markdown(
+    """
 This project demonstrates an end-to-end **data quality monitoring system** built using modern data engineering tools. It begins with a FastAPI-based simulated company database and progresses through an automated ETL process to deliver interactive dashboards via Streamlit.
-""")
+"""
+)
 
 # Project Goal
 st.markdown("### 🎯 Project Goal")
-st.write("To proactively monitor and maintain data quality through an automated and interactive pipeline.")
+st.write(
+    "To proactively monitor and maintain data quality through an automated and interactive pipeline."
+)
 
 # Tools & Technologies
 st.markdown("### 🛠️ Tools & Technologies Used")
@@ -34,7 +40,8 @@ for col, logo_url in zip(cols, tools.values()):
 # Data Pipeline
 st.markdown("### 🔄 Data Pipeline")
 
-st.markdown("""
+st.markdown(
+    """
 This project simulates a real-world data quality monitoring workflow using a complete data pipeline. Below is an overview of each step in the pipeline:
 
 1. **Simulated Company Database (FastAPI)**  
@@ -56,8 +63,8 @@ This project simulates a real-world data quality monitoring workflow using a com
    Finally, the processed data is loaded into a `Streamlit` app where users can explore data quality insights via dynamic charts and dashboards.
 
 ⚠️ Due to slow response times from Render, manual extraction is occasionally used to speed up the visualization process during development.
-""")
-
+"""
+)
 
 
 show_footer()
