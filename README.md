@@ -1,45 +1,33 @@
 # Data Quality Monitoring 
 
-## ![Overview Icon](https://img.icons8.com/ios-filled/24/000000/overview-pages-3.png) Overview
+## 🧠  Overview
 
 This project simulates a real-world **data quality monitoring workflow** using a complete data pipeline. The pipeline automates data extraction, transformation, and visualization, providing insights into data quality issues.
 
 ---
 
-## Live Demo
+##  📊 Live Demo
 
-Check out the interactive Streamlit dashboard here:  
-[Streamlit app](https://data-quality-monitoring-2025.streamlit.app/)
+Check out the interactive Streamlit dashboard here:  [Data Quality Monitoring](https://project-data-quality-monitoring.streamlit.app/)
 
 ---
 
-## Architecture
+## 🏬 Architecture
 
 The pipeline consists of the following steps:
 
-### 1. Simulated Company Database (FastAPI)
-- A FastAPI backend mimics a real application exposing data via an API.
-
-### 2. Data Extraction (Python + Pandas)
-- Python scripts use `requests` and `pandas` to fetch and structure data.
-
-### 3. Transformation and Storage (Pandas)
-- Data is cleaned and stored efficiently using **Parquet format**
-
-### 4. ETL Automation (Airflow)
-- Apache Airflow orchestrates the Extract-Transform-Load process for automation.
-
-### 5. Database Creation (DuckDB)
-- Parquet data is loaded into DuckDB for efficient queryinq.
-
-### 6. Interactive Visualization (Streamlit App)
-- A Streamlit dashboard provides insights into data quality via dynamic charts.
+- **Simulated Company Database (FastAPI)**: A `FastAPI` backend mimics a real application exposing data via an API.
+- **Data Extraction (Python + Pandas)**: Python scripts use `requests` and `pandas` to fetch and structure data.
+- **Transformation and Storage (Pandas)**:  Data is cleaned and stored efficiently using *Parquet format*
+- **ETL Automation (Airflow)**: `Apache Airflow` orchestrates the Extract-Transform-Load process for automation.
+- **Database Creation (DuckDB)**: Parquet data is loaded into `DuckDB` for efficient queryinq.
+- **Interactive Visualization (Streamlit App)**: A `Streamlit` dashboard provides insights into data quality via dynamic charts.
 
 ⚠️ Due to slow response times from Render, manual extraction may be used during development.
 
 ---
 
-## ![Tech Stack Icon](https://img.icons8.com/ios-filled/24/000000/technology.png) Tech Stack
+## 🎯 Tech Stack
 
 - **FastAPI** — Simulated data source API  
 - **Python & Pandas** — Data extraction, transformation, and storage  
@@ -49,7 +37,7 @@ The pipeline consists of the following steps:
 
 ---
 
-## Getting Started
+## ⚙️ Getting Started
 
 ### Prerequisites
 
