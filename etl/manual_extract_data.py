@@ -18,11 +18,11 @@ def create_folder():
     if "data" not in os.listdir():
         logging.error(os.listdir())
         logging.error("creating folder data")
-        os.mkdir("data")
-    if "raw" not in os.listdir("data"):
+        os.mkdir("../data")
+    if "raw" not in os.listdir("../data"):
         logging.error(os.listdir())
         logging.error("creating folder raw")
-        os.mkdir("data/raw")
+        os.mkdir("../data/raw")
 
 
 def get_data(business_parameter: str) -> tuple[str, int]:

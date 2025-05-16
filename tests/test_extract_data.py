@@ -1,8 +1,8 @@
 import unittest
-from datetime import date, timedelta
+from datetime import date
 from unittest.mock import MagicMock, patch
 
-from extract_data import collect_traffic_data, get_data
+from etl.extract_data import collect_traffic_data, get_data
 
 
 class TestExtractData(unittest.TestCase):

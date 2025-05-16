@@ -1,10 +1,9 @@
-import os
 import unittest
 from datetime import date
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, patch
 
-from manual_extract_data import (collect_traffic_data, create_folder, get_data,
-                                 is_valid_sensor, save_data_by_month)
+from etl.manual_extract_data import (collect_traffic_data, get_data,
+                                     is_valid_sensor, save_data_by_month)
 
 
 class TestTrafficDataScript(unittest.TestCase):
