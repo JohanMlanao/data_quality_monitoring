@@ -1,5 +1,5 @@
 import os
-
+from design import page_header, show_footer
 import duckdb
 import numpy as np
 import pandas as pd
@@ -58,13 +58,7 @@ create_database()
 # Connection to the database
 con = duckdb.connect(database="data/data.duckdb", read_only=False)
 
-# -- Set page config
-app_title = "Data quality monitoring"
-
-st.set_page_config(page_title=app_title)
-
-# Title the app
-st.title("Data quality monitoring")
+page_header("Data Visualisation", "Explore quality metrics and insights")
 
 # Display the table and select a location and a sensor
 available_location_df = con.execute(
@@ -89,7 +83,8 @@ with st.sidebar:
 
 data = get_table(current_store=location, current_sensor=sensor_id)
 
-# Display the sensor table
+# Display the table
+st.subheader("Store Information")
 st.write(data)
 
 data['legend_label'] = data['store_location'] + ' - ' + data['sensor_id']
@@ -118,3 +113,5 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
+show_footer()
