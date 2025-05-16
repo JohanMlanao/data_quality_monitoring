@@ -1,4 +1,5 @@
 import os
+import logging
 from design import page_header, show_footer
 import duckdb
 import numpy as np
@@ -16,7 +17,11 @@ def create_database() -> None:
     Returns:
         None
     """
-    if "data.duckdb" not in os.listdir("../data"):
+    if "data" not in os.listdir():
+        logging.error(os.listdir())
+        logging.error("creating folder data")
+        os.mkdir("data")
+    if "data.duckdb" not in os.listdir("data"):
         init_db = duckdb.connect(database="data/data.duckdb", read_only=False)
         init_db.execute(
             "CREATE TABLE IF NOT EXISTS data AS SELECT * FROM 'data/processed/data.parquet'"
@@ -84,7 +89,7 @@ with st.sidebar:
 data = get_table(current_store=location, current_sensor=sensor_id)
 
 # Display the table
-st.subheader("Store Information")
+st.write("**Store Information**")
 st.write(data)
 
 data["legend_label"] = data["store_location"] + " - " + data["sensor_id"]
