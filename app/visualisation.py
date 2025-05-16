@@ -16,7 +16,7 @@ def create_database() -> None:
     Returns:
         None
     """
-    if "data.duckdb" not in os.listdir("data"):
+    if "data.duckdb" not in os.listdir("../data"):
         init_db = duckdb.connect(database="data/data.duckdb", read_only=False)
         init_db.execute(
             "CREATE TABLE IF NOT EXISTS data AS SELECT * FROM 'data/processed/data.parquet'"
